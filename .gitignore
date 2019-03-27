@@ -1,0 +1,8 @@
+# exclude everything except:
+#     directory "src",
+#     file ".gitignore",
+#     file "README.md"
+/*
+!/src
+!/.gitignore
+!/README.md
