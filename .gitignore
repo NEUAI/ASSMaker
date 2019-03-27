@@ -3,6 +3,8 @@
 #     file ".gitignore",
 #     file "README.md"
 /*
+!/include
 !/src
 !/.gitignore
+!/CMakeLists.txt
 !/README.md
