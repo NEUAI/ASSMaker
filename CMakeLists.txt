@@ -9,11 +9,14 @@ set(CMAKE_AUTOMOC ON)
 # Create code from a list of Qt designer ui files
 set(CMAKE_AUTOUIC ON)
 
+include_directories(include)
+
 # Find the QtWidgets library
 find_package(Qt5Widgets CONFIG REQUIRED)
 
 # Populate a CMake variable with the sources
 set(ASSMaker_SRCS
+	src/ASS.cpp
     src/ASSMaker.cpp
 )
 # Tell CMake to create the ASSMaker executable
