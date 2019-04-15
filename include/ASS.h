@@ -89,10 +89,11 @@ class ASS {
         }
         friend ostream& operator<<(ostream& os, const Style& style) {
             os << "Style: " << style.name << "," << style.fontname << "," << style.fontsize << ",";
-            os << setw(8) << setfill('0') << setiosflags(ios::uppercase) << hex << style.primaryColor << ",";
-            os << setw(8) << setfill('0') << setiosflags(ios::uppercase) << hex << style.secondaryColor << ",";
-            os << setw(8) << setfill('0') << setiosflags(ios::uppercase) << hex << style.outlineColor << ",";
-            os << setw(8) << setfill('0') << setiosflags(ios::uppercase) << hex << style.backColor << ",";
+            os << "&" << setw(8) << setfill('0') << setiosflags(ios::uppercase) << hex << style.primaryColor << ",";
+            os << "&" << setw(8) << setfill('0') << setiosflags(ios::uppercase) << hex << style.secondaryColor << ",";
+            os << "&" << setw(8) << setfill('0') << setiosflags(ios::uppercase) << hex << style.outlineColor << ",";
+            os << "&" << setw(8) << setfill('0') << setiosflags(ios::uppercase) << hex << style.backColor << ",";
+            os << dec;
             os << (style.bold ? "-1" : "0") << ",";
             os << (style.italic ? "-1" : "0") << ",";
             os << (style.underline ? "-1" : "0") << ",";
@@ -106,6 +107,9 @@ class ASS {
     map<string, Style*> v4PlusStyles;
     struct Effect {
         string type;
+        friend ostream& operator<<(ostream& os, const Effect& effect) {
+            return os;
+        }
     };
     struct ScrollUp : public Effect {
         int y1;
@@ -119,6 +123,13 @@ class ASS {
             delay = 0;
             fadeAwayHeight = 0;
         }
+        friend ostream& operator<<(ostream& os, const ScrollUp& scrollUp) {
+            os << scrollUp.type << ";" << scrollUp.y1 << ";" << scrollUp.y2 << ";" << scrollUp.delay;
+            if (scrollUp.fadeAwayHeight != 0) {
+                os << ";" << scrollUp.fadeAwayHeight;
+            }
+            return os;
+        }
     };
     struct Banner : public Effect {
         int delay;
@@ -129,6 +140,16 @@ class ASS {
             delay = 0;
             leftToRight = false;
             fadeAwayWidth = 0;
+        }
+        friend ostream& operator<<(ostream& os, const Banner& banner) {
+            os << banner.type << ";" << banner.delay;
+            if (banner.leftToRight || banner.fadeAwayWidth != 0) {
+                os << ";" << (banner.leftToRight? "1" : "0");
+            }
+            if (banner.fadeAwayWidth != 0) {
+                os << ";" << banner.fadeAwayWidth;
+            }
+            return os;
         }
     };
     struct ScrollDown : public Effect {
@@ -142,6 +163,13 @@ class ASS {
             y2 = 0;
             delay = 0;
             fadeAwayHeight = 0;
+        }
+        friend ostream& operator<<(ostream& os, const ScrollDown& scrollDown) {
+            os << scrollDown.type << ";" << scrollDown.y1 << ";" << scrollDown.y2 << ";" << scrollDown.delay;
+            if (scrollDown.fadeAwayHeight != 0) {
+                os << ";" << scrollDown.fadeAwayHeight;
+            }
+            return os;
         }
     };
     struct Event {
@@ -166,15 +194,17 @@ class ASS {
             marginV = 8;
             effect = nullptr;
         }
+        friend ostream& operator<<(ostream& os, const Event& event) {
+            os << event.type << ": " << event.layer << ",";
+            os << setw(2) << setfill('0') << event.start[0] << ":" << setw(2) << setfill('0') << event.start[1] << ":" << setw(2) << setfill('0') << event.start[2] << "." << setw(2) << setfill('0') << event.start[3] << ",";
+            os << setw(2) << setfill('0') << event.end[0] << ":" << setw(2) << setfill('0') << event.end[1] << ":" << setw(2) << setfill('0') << event.end[2] << "." << setw(2) << setfill('0') << event.end[3] << ",";
+            os << event.style->name << "," << event.name << "," << event.marginL << "," << event.marginR << "," << event.marginV << "," << *event.effect << "," << event.text;
+            return os;
+        }
     };
     struct Dialogue : public Event {
         Dialogue() {
             type = "Dialogue";
-        }
-        friend ostream& operator<<(ostream& os, const Dialogue& dialogue) {
-            os << dialogue.type << "," << dialogue.layer << ",";
-            // @todo
-            return os;
         }
     };
     struct Comment : public Event {

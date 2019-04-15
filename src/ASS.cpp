@@ -164,13 +164,13 @@ void ASS::parseFile(ifstream& file) {
                             style->alignment = stoul(values[i]);
                         }
                         else if (fields[i] == "MarginL") {
-                            style->marginL = stoul(values[i]);
+                            style->marginL = stoi(values[i]);
                         }
                         else if (fields[i] == "MarginR") {
-                            style->marginR = stoul(values[i]);
+                            style->marginR = stoi(values[i]);
                         }
                         else if (fields[i] == "MarginV") {
-                            style->marginV = stoul(values[i]);
+                            style->marginV = stoi(values[i]);
                         }
                         else if (fields[i] == "Encoding") {
                             style->encoding = stoul(values[i]);
@@ -200,21 +200,21 @@ void ASS::parseFile(ifstream& file) {
                         }
                         else if (fields[i] == "Start") {
                             size_t tag1 = values[i].find(':');
-                            size_t tag2 = values[i].substr(tag1).find(':');
+                            size_t tag2 = values[i].substr(tag1 + 1).find(':') + tag1 + 1;
                             size_t tag3 = values[i].find('.');
                             dialogue->start[0] = stoul(values[i].substr(0, tag1));
                             dialogue->start[1] = stoul(values[i].substr(tag1 + 1, tag2));
                             dialogue->start[2] = stoul(values[i].substr(tag2 + 1, tag3));
-                            dialogue->start[3] = stoul(values[i].substr(tag3));
+                            dialogue->start[3] = stoul(values[i].substr(tag3 + 1));
                         }
                         else if (fields[i] == "End") {
                             size_t tag1 = values[i].find(':');
-                            size_t tag2 = values[i].substr(tag1).find(':');
+                            size_t tag2 = values[i].substr(tag1 + 1).find(':') + tag1 + 1;
                             size_t tag3 = values[i].find('.');
                             dialogue->end[0] = stoul(values[i].substr(0, tag1));
                             dialogue->end[1] = stoul(values[i].substr(tag1 + 1, tag2));
                             dialogue->end[2] = stoul(values[i].substr(tag2 + 1, tag3));
-                            dialogue->end[3] = stoul(values[i].substr(tag3));
+                            dialogue->end[3] = stoul(values[i].substr(tag3 + 1));
                         }
                         else if (fields[i] == "Style") {
                             dialogue->style = v4PlusStyles[values[i]];
@@ -223,13 +223,13 @@ void ASS::parseFile(ifstream& file) {
                             dialogue->name = values[i];
                         }
                         else if (fields[i] == "MarginL") {
-                            dialogue->marginL = stoul(values[i]);
+                            dialogue->marginL = stoi(values[i]);
                         }
                         else if (fields[i] == "MarginR") {
-                            dialogue->marginR = stoul(values[i]);
+                            dialogue->marginR = stoi(values[i]);
                         }
                         else if (fields[i] == "MarginV") {
-                            dialogue->marginV = stoul(values[i]);
+                            dialogue->marginV = stoi(values[i]);
                         }
                         else if (fields[i] == "Effect") {
                             if (values[i].length() == 0) {
@@ -319,7 +319,9 @@ void ASS::dumpFile(ofstream & file) {
     file << endl;
     file << "[Events]" << endl;
     file << "Format: Layer, Start, End, Style, Name, MarginL, MarginR, MarginV, Effect, Text" << endl;
-    // @todo
+    for (auto& event : events) {
+        file << *event << endl;
+    }
 }
 
 void ASS::splitFormat(const string & s, vector<string> & v, const string & c) {
